@@ -1,34 +1,48 @@
 'use strict';
 
 import React from 'react';
-import Checkbox from 'material-ui/Checkbox';
-import {List, ListItem} from 'material-ui/List';
-import Subheader from 'material-ui/Subheader';
+import List from 'material-ui/List';
 
 
 require('styles//ListPanel.css');
 
-const ListItemStyle = {
-  borderBottom:'1px solid #E0E0E0'
-};
 
 
 class ListPanelComponent extends React.Component {
   constructor(props){
     super(props);
-    this.list = [
-      "item a","item b","item c"
-    ];
+
+    this.state = {
+      list:props.list,
+      showHistory:props.showHistory
+    };
+  }
+
+  Check(e,i){
+    if (this.props.onCheck){
+      this.props.onCheck(e, i);
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    //console.log(nextProps);
+    this.setState({
+      showHistory:nextProps.showHistory
+    });
   }
 
   render() {
-    let rendered = this.list.map(function(item,index){
-        return (<ListItem style={{borderBottom:'1px solid #E0E0E0'}}
-                         leftCheckbox={<Checkbox />}
-                         primaryText={item}
+    console.log("panel render");
+    console.log(this.state);
+    let rendered = this.state.list.map(function(item,index){
+
+        return (<span key={item.key} style={{display:(this.state.showHistory || !item.done)?'block':'none'}}><input type="checkbox"
+                             style={{borderBottom:'1px solid #E0E0E0'}}
+                             onChange = {this.Check.bind(this,index)}
+                             disabled={item.done}
+
           //secondaryText="Hangouts video call"
-        />);
-    });
+        /> {item.value} <br/></span>);
+    }.bind(this));
     return (
       <div className="listpanel-component">
         <List>

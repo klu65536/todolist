@@ -1,13 +1,17 @@
 'use strict';
 
 import React from 'react';
-import TextField from 'material-ui/TextField';
 
 require('styles//Input.css');
 
 const style = {
-  minWidth:'100%',
-  marginTop:'-30px'
+  minWidth:'95%',
+  marginTop:'-30px',
+  marginRight:'25px',
+  borderTop: '0px',
+  borderBottom:'1px solid black',
+  borderLeft:'0px',
+  borderRight:'0px'
 };
 
 class InputComponent extends React.Component {
@@ -16,21 +20,32 @@ class InputComponent extends React.Component {
     //this.Finish = this.Finish.bind(this);
     //this.HandleChange = this.HandleChange.bind(this);
     this.state = {
-      thingsTodo:""
+      thingsTodo:''
     };
   }
   Finish(e){
     if (e.key == 'Enter'){
-      console.log(this.state.thingsTodo);
+      if (this.props.onKeyPress){
+        var value = this.todoInput.value;
+        if (value.replace(/^\s+|\s+$/g,'') == ''){
+          return ;
+        }
+        this.todoInput.value = '';
+        this.props.onKeyPress(e, value);
+        this.todoInput.focus();
+
+      }
     }
   }
-  HandleChange(e){
-    this.state.thingsTodo = e.target.value;
-  }
+
   render() {
     return (
-      <div className="input-component">
-        <TextField id="thingTodo" style={style} hintText={this.props.hintText} onChange={this.HandleChange.bind(this)} onKeyPress = {this.Finish.bind(this)}/>
+      <div className='input-component'>
+        <input id='thingTodo'
+                   style={style}
+                   onKeyPress = {this.Finish.bind(this)}
+                   ref = {(input) => {this.todoInput = input;}}
+        />
       </div>
     );
   }
